@@ -4,7 +4,15 @@ import getApiBaseUrl from '../api';
 const Teams = () => {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
-  const endpoint = `${getApiBaseUrl()}/teams/`;
+  const endpoint = (() => {
+    if (typeof window !== 'undefined') {
+      const codespacesMatch = window.location.hostname.match(/^(.*)-3000\.app\.github\.dev$/);
+      if (codespacesMatch) {
+        return `https://${codespacesMatch[1]}-8000.app.github.dev/api/teams/`;
+      }
+    }
+    return `${getApiBaseUrl()}/teams/`;
+  })();
 
   useEffect(() => {
     fetch(endpoint)

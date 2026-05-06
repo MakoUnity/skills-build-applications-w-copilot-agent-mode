@@ -4,7 +4,15 @@ import getApiBaseUrl from '../api';
 const Workouts = () => {
   const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const endpoint = `${getApiBaseUrl()}/workouts/`;
+  const endpoint = (() => {
+    if (typeof window !== 'undefined') {
+      const codespacesMatch = window.location.hostname.match(/^(.*)-3000\.app\.github\.dev$/);
+      if (codespacesMatch) {
+        return `https://${codespacesMatch[1]}-8000.app.github.dev/api/workouts/`;
+      }
+    }
+    return `${getApiBaseUrl()}/workouts/`;
+  })();
 
   useEffect(() => {
     fetch(endpoint)

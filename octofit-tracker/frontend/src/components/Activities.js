@@ -4,7 +4,15 @@ import getApiBaseUrl from '../api';
 const Activities = () => {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
-  const endpoint = `${getApiBaseUrl()}/activities/`;
+  const endpoint = (() => {
+    if (typeof window !== 'undefined') {
+      const codespacesMatch = window.location.hostname.match(/^(.*)-3000\.app\.github\.dev$/);
+      if (codespacesMatch) {
+        return `https://${codespacesMatch[1]}-8000.app.github.dev/api/activities/`;
+      }
+    }
+    return `${getApiBaseUrl()}/activities/`;
+  })();
 
   useEffect(() => {
     fetch(endpoint)
@@ -52,7 +60,7 @@ const Activities = () => {
                     <td>{idx + 1}</td>
                     <td><span className="badge bg-primary">{activity.type || '—'}</span></td>
                     <td>{activity.duration ?? '—'}</td>
-                    <td>{activity.user ?? '—'}</td>
+                    <td>{activity.user?.username || activity.user || '—'}</td>
                   </tr>
                 ))}
               </tbody>

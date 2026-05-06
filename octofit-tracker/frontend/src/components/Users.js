@@ -4,7 +4,15 @@ import getApiBaseUrl from '../api';
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const endpoint = `${getApiBaseUrl()}/users/`;
+  const endpoint = (() => {
+    if (typeof window !== 'undefined') {
+      const codespacesMatch = window.location.hostname.match(/^(.*)-3000\.app\.github\.dev$/);
+      if (codespacesMatch) {
+        return `https://${codespacesMatch[1]}-8000.app.github.dev/api/users/`;
+      }
+    }
+    return `${getApiBaseUrl()}/users/`;
+  })();
 
   useEffect(() => {
     fetch(endpoint)
@@ -54,7 +62,7 @@ const Users = () => {
                     <td>{user.email || '—'}</td>
                     <td>
                       {user.team
-                        ? <span className="badge bg-success">{user.team}</span>
+                        ? <span className="badge bg-success">{user.team.name || user.team}</span>
                         : <span className="text-muted">No team</span>}
                     </td>
                   </tr>

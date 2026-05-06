@@ -11,7 +11,15 @@ const medalEmoji = (rank) => {
 const Leaderboard = () => {
   const [leaders, setLeaders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const endpoint = `${getApiBaseUrl()}/leaderboard/`;
+  const endpoint = (() => {
+    if (typeof window !== 'undefined') {
+      const codespacesMatch = window.location.hostname.match(/^(.*)-3000\.app\.github\.dev$/);
+      if (codespacesMatch) {
+        return `https://${codespacesMatch[1]}-8000.app.github.dev/api/leaderboard/`;
+      }
+    }
+    return `${getApiBaseUrl()}/leaderboard/`;
+  })();
 
   useEffect(() => {
     fetch(endpoint)
@@ -57,7 +65,7 @@ const Leaderboard = () => {
                 {leaders.map((leader, idx) => (
                   <tr key={leader.id || idx} className={idx < 3 ? 'table-warning' : ''}>
                     <td className="fw-bold">{medalEmoji(idx + 1)}</td>
-                    <td>{leader.user ?? '—'}</td>
+                    <td>{leader.user?.username || leader.user || '—'}</td>
                     <td><span className="badge octofit-badge">{leader.points ?? 0}</span></td>
                   </tr>
                 ))}
