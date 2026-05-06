@@ -17,8 +17,6 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import UserViewSet, TeamViewSet, ActivityViewSet, WorkoutViewSet, LeaderboardViewSet
-from rest_framework.schemas import get_schema_view
-from rest_framework.documentation import include_docs_urls
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
@@ -50,8 +48,6 @@ def api_root(request, format=None):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', api_root, name='api-root'),
-    path('', include(router.urls)),
-    path('schema/', get_schema_view(title="OctoFit API"), name='openapi-schema'),
-    path('docs/', include_docs_urls(title='OctoFit API')),
+    path('api/', api_root, name='api-root'),
+    path('api/', include(router.urls)),
 ]
