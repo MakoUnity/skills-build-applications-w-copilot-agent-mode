@@ -20,15 +20,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-$&+im)587-sczq%_923ob6rsigz36jaax@@b6fsiz+k1r2q4=4'
+import os
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-$&+im)587-sczq%_923ob6rsigz36jaax@@b6fsiz+k1r2q4=4')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 
 
 # Obsługa hostów: localhost oraz Codespace
-import os
 CODESPACE_NAME = os.environ.get('CODESPACE_NAME')
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 if CODESPACE_NAME:
@@ -142,7 +142,13 @@ STATIC_URL = 'static/'
 AUTH_USER_MODEL = 'octofit_tracker.User'
 
 # Konfiguracja CORS
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+]
+if CODESPACE_NAME:
+    CORS_ALLOWED_ORIGINS.append(f'https://{CODESPACE_NAME}-3000.app.github.dev')
+
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = ['*']
 CORS_ALLOW_METHODS = ['*']
@@ -151,4 +157,3 @@ CORS_ALLOW_METHODS = ['*']
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-CORS_ALLOW_ALL_ORIGINS = True

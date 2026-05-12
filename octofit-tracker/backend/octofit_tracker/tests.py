@@ -1,4 +1,6 @@
 from django.test import TestCase
+from rest_framework.test import APITestCase
+from rest_framework import status
 from .models import Team, User, Activity, Workout, Leaderboard
 
 class ModelSmokeTests(TestCase):
@@ -26,3 +28,22 @@ class ModelSmokeTests(TestCase):
     def test_leaderboard(self):
         self.assertEqual(self.leaderboard.points, 42)
         self.assertEqual(self.leaderboard.user, self.user)
+
+
+class APIEndpointTests(APITestCase):
+    def test_api_root(self):
+        """Test that GET /api/ returns expected keys/URLs"""
+        response = self.client.get('/api/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('users', response.data)
+        self.assertIn('teams', response.data)
+        self.assertIn('activities', response.data)
+        self.assertIn('workouts', response.data)
+        self.assertIn('leaderboard', response.data)
+    
+    def test_root_redirects_to_api(self):
+        """Test that GET / returns the API root document"""
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('users', response.data)
+        self.assertIn('teams', response.data)
