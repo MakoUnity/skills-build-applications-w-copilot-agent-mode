@@ -48,7 +48,9 @@ def api_root(request, format=None):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Root path serves API root document per project requirements
     path('', api_root, name='api-root'),
+    # API prefix also serves root document
     path('api/', api_root, name='api-root-api'),
     path('api/', include(router.urls)),
 ]
